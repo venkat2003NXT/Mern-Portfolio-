@@ -11,25 +11,25 @@ const Register = () => {
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
-    try {
-      const response = await axios.post("http://localhost:5004/register", {
-        name,
-        email,
-        password
-      })
-      const { user, token } = response.data
-      // Save token & user to localStorage so Dashboard and ProtectedRoutes can use them
-      localStorage.setItem("token", token)
-      localStorage.setItem("user", JSON.stringify(user))
-      // navigate to dashboard
-      navigate("/dashboard")
-    } catch (err) {
-      console.log(err.response?.data || err.message)
-      setError(err.response?.data || "Registration failed")
-    }
+  e.preventDefault()
+  setError(null)
+  try {
+    const response = await api.post("/register", {
+      name,
+      email,
+      password
+    })
+    const { user, token } = response.data
+    // Save token & user to localStorage so Dashboard and ProtectedRoutes can use them
+    localStorage.setItem("token", token)
+    localStorage.setItem("user", JSON.stringify(user))
+    // navigate to dashboard
+    navigate("/dashboard")
+  } catch (err) {
+    console.log(err.response?.data || err.message)
+    setError(err.response?.data || "Registration failed")
   }
+}
 
   return (
     <div className='flex flex-col items-center justify-center h-screen bg-blue-200 gap-4'>

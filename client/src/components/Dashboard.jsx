@@ -174,55 +174,58 @@ const Dashboard = () => {
 
   // Project CRUD
   const handleCreateProject = async () => {
-    if (!user?.portfolio) return
-    setLoading(true)
-    setError(null)
-    try {
-      const techArray = projectTechs.split(",").map(t => t.trim()).filter(Boolean)
-      const res = await axios.post(
-        `http://localhost:5004/portfolio/${user.portfolio}/projects`,
-        {
-          title: projectTitle,
-          description: projectDescription,
-          techStack: techArray
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-      // server returns updated portfolio with projects populated
-      setPortfolio(res.data)
-      setShowProjectModal(false)
-      setProjectTitle("")
-      setProjectDescription("")
-      setProjectTechs("")
-    } catch (err) {
-      console.log(err.response?.data || err.message)
-      setError(err.response?.data || err.message)
-    } finally {
-      setLoading(false)
-    }
+  if (!user?.portfolio) return
+  setLoading(true)
+  setError(null)
+  try {
+    const techArray = projectTechs.split(",").map(t => t.trim()).filter(Boolean)
+    const res = await api.post(
+      `/portfolio/${user.portfolio}/projects`,
+      {
+        title: projectTitle,
+        description: projectDescription,
+        techStack: techArray
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    )
+    // server returns updated portfolio with projects populated
+    setPortfolio(res.data)
+    setShowProjectModal(false)
+    setProjectTitle("")
+    setProjectDescription("")
+    setProjectTechs("")
+  } catch (err) {
+    console.log(err.response?.data || err.message)
+    setError(err.response?.data || err.message)
+  } finally {
+    setLoading(false)
   }
+}
+
+
 
   const handleDeleteProject = async (projectId) => {
-    if (!user?.portfolio) return
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await axios.delete(
-        `http://localhost:5004/portfolio/${user.portfolio}/projects/${projectId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-      setPortfolio(res.data)
-    } catch (err) {
-      console.log(err.response?.data || err.message)
-      setError(err.response?.data || err.message)
-    } finally {
-      setLoading(false)
-    }
+  if (!user?.portfolio) return
+  setLoading(true)
+  setError(null)
+  try {
+    const res = await api.delete(
+      `/portfolio/${user.portfolio}/projects/${projectId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    )
+    setPortfolio(res.data)
+  } catch (err) {
+    console.log(err.response?.data || err.message)
+    setError(err.response?.data || err.message)
+  } finally {
+    setLoading(false)
   }
+}
+
 
   const openCreateModal = () => {
     setBioInput("")
