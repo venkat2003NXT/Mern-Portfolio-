@@ -1,7 +1,8 @@
 // client/src/components/Dashboard.jsx
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from "axios"
+import api from "../api"
+
 
 const Dashboard = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
@@ -48,14 +49,10 @@ const Dashboard = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get(
-        `http://localhost:5004/getPortfolio/${user?.portfolio}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
+      const response = await api.get(`/getPortfolio/${user?.portfolio}`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
       setPortfolio(response.data)
     } catch (error) {
       console.log(error.response?.data || error.message)
@@ -79,15 +76,18 @@ const Dashboard = () => {
         socials: { linkedin: linkedinInput, github: githubInput }
       }
 
-      const response = await axios.post(
-        "http://localhost:5004/createPortfolio",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
+      const response = await api.post("/createPortfolio", {
+  bio: bioInput,
+  jobTitle: jobTitleInput,
+  summary,
+  avatarUrl,
+  resumeUrl,
+  skills,
+  socials
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
 
       const updatedUser = { ...user, portfolio: response.data._id }
       setUser(updatedUser)
@@ -127,15 +127,18 @@ const Dashboard = () => {
         socials: { linkedin: linkedinInput, github: githubInput }
       }
 
-      const response = await axios.put(
-        `http://localhost:5004/updatePortfolio/${user?.portfolio}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
+      const response = await api.put(`/updatePortfolio/${user?.portfolio}`, {
+  bio: bioInput,
+  jobTitle: jobTitleInput,
+  summary,
+  avatarUrl,
+  resumeUrl,
+  skills,
+  socials
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
       setPortfolio(response.data)
       setShowEditModal(false)
     } catch (error) {
@@ -151,14 +154,10 @@ const Dashboard = () => {
     setLoading(true)
     setError(null)
     try {
-      await axios.delete(
-        `http://localhost:5004/deletePortfolio/${user?.portfolio}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
+      await api.delete(`/deletePortfolio/${user?.portfolio}`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
 
       const updatedUser = { ...user, portfolio: null }
       setUser(updatedUser)
